@@ -36,17 +36,18 @@
 			this.CBBits = new System.Windows.Forms.ComboBox();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.lblViewBlock = new System.Windows.Forms.Label();
+			this.RBText = new System.Windows.Forms.RadioButton();
+			this.RBHEX = new System.Windows.Forms.RadioButton();
 			this.btnExit = new System.Windows.Forms.Button();
 			this.btnCheck = new System.Windows.Forms.Button();
 			this.BtnOpen = new System.Windows.Forms.Button();
 			this.BtnClose = new System.Windows.Forms.Button();
 			this.BtnSend = new System.Windows.Forms.Button();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.lblPortWindow = new System.Windows.Forms.Label();
+			this.tbInput = new System.Windows.Forms.TextBox();
 			this.lblPortBlock = new System.Windows.Forms.Label();
 			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-			this.RBText = new System.Windows.Forms.RadioButton();
-			this.RBHEX = new System.Windows.Forms.RadioButton();
+			this.tbOutput = new System.Windows.Forms.TextBox();
+			this.btnClear = new System.Windows.Forms.Button();
 			this.FlowPanel.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel2.SuspendLayout();
@@ -218,6 +219,26 @@
 			this.lblViewBlock.TabIndex = 0;
 			this.lblViewBlock.Text = "Вид:";
 			// 
+			// RBText
+			// 
+			this.RBText.Location = new System.Drawing.Point(3, 16);
+			this.RBText.Name = "RBText";
+			this.RBText.Size = new System.Drawing.Size(57, 17);
+			this.RBText.TabIndex = 1;
+			this.RBText.TabStop = true;
+			this.RBText.Text = "Text";
+			this.RBText.UseVisualStyleBackColor = true;
+			// 
+			// RBHEX
+			// 
+			this.RBHEX.Location = new System.Drawing.Point(3, 39);
+			this.RBHEX.Name = "RBHEX";
+			this.RBHEX.Size = new System.Drawing.Size(85, 17);
+			this.RBHEX.TabIndex = 2;
+			this.RBHEX.TabStop = true;
+			this.RBHEX.Text = "HEX";
+			this.RBHEX.UseVisualStyleBackColor = true;
+			// 
 			// btnExit
 			// 
 			this.btnExit.Location = new System.Drawing.Point(692, 413);
@@ -240,7 +261,7 @@
 			// 
 			// BtnOpen
 			// 
-			this.BtnOpen.Location = new System.Drawing.Point(84, 388);
+			this.BtnOpen.Location = new System.Drawing.Point(84, 395);
 			this.BtnOpen.Name = "BtnOpen";
 			this.BtnOpen.Size = new System.Drawing.Size(75, 23);
 			this.BtnOpen.TabIndex = 0;
@@ -251,7 +272,7 @@
 			// BtnClose
 			// 
 			this.BtnClose.Enabled = false;
-			this.BtnClose.Location = new System.Drawing.Point(3, 388);
+			this.BtnClose.Location = new System.Drawing.Point(3, 395);
 			this.BtnClose.Name = "BtnClose";
 			this.BtnClose.Size = new System.Drawing.Size(75, 23);
 			this.BtnClose.TabIndex = 1;
@@ -261,28 +282,20 @@
 			// 
 			// BtnSend
 			// 
-			this.BtnSend.Location = new System.Drawing.Point(588, 359);
+			this.BtnSend.Location = new System.Drawing.Point(588, 366);
 			this.BtnSend.Name = "BtnSend";
 			this.BtnSend.Size = new System.Drawing.Size(75, 23);
 			this.BtnSend.TabIndex = 4;
 			this.BtnSend.Text = "Send";
 			this.BtnSend.UseVisualStyleBackColor = true;
+			this.BtnSend.Click += new System.EventHandler(this.BtnSend_Click);
 			// 
-			// textBox1
+			// tbInput
 			// 
-			this.textBox1.Location = new System.Drawing.Point(3, 359);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(579, 20);
-			this.textBox1.TabIndex = 3;
-			// 
-			// lblPortWindow
-			// 
-			this.lblPortWindow.BackColor = System.Drawing.SystemColors.Window;
-			this.lblPortWindow.Location = new System.Drawing.Point(3, 22);
-			this.lblPortWindow.Name = "lblPortWindow";
-			this.lblPortWindow.Size = new System.Drawing.Size(666, 334);
-			this.lblPortWindow.TabIndex = 1;
-			this.lblPortWindow.Text = "Port Window";
+			this.tbInput.Location = new System.Drawing.Point(3, 366);
+			this.tbInput.Name = "tbInput";
+			this.tbInput.Size = new System.Drawing.Size(579, 20);
+			this.tbInput.TabIndex = 3;
 			// 
 			// lblPortBlock
 			// 
@@ -296,36 +309,39 @@
 			// 
 			this.flowLayoutPanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.flowLayoutPanel2.Controls.Add(this.lblPortBlock);
-			this.flowLayoutPanel2.Controls.Add(this.lblPortWindow);
-			this.flowLayoutPanel2.Controls.Add(this.textBox1);
+			this.flowLayoutPanel2.Controls.Add(this.tbOutput);
+			this.flowLayoutPanel2.Controls.Add(this.tbInput);
 			this.flowLayoutPanel2.Controls.Add(this.BtnSend);
 			this.flowLayoutPanel2.Controls.Add(this.BtnClose);
 			this.flowLayoutPanel2.Controls.Add(this.BtnOpen);
+			this.flowLayoutPanel2.Controls.Add(this.btnClear);
 			this.flowLayoutPanel2.Location = new System.Drawing.Point(14, 12);
 			this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(5);
 			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
 			this.flowLayoutPanel2.Size = new System.Drawing.Size(674, 424);
 			this.flowLayoutPanel2.TabIndex = 15;
 			// 
-			// RBText
+			// tbOutput
 			// 
-			this.RBText.Location = new System.Drawing.Point(3, 16);
-			this.RBText.Name = "RBText";
-			this.RBText.Size = new System.Drawing.Size(57, 17);
-			this.RBText.TabIndex = 1;
-			this.RBText.TabStop = true;
-			this.RBText.Text = "Text";
-			this.RBText.UseVisualStyleBackColor = true;
+			this.tbOutput.Location = new System.Drawing.Point(3, 25);
+			this.tbOutput.Multiline = true;
+			this.tbOutput.Name = "tbOutput";
+			this.tbOutput.ReadOnly = true;
+			this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.tbOutput.Size = new System.Drawing.Size(660, 335);
+			this.tbOutput.TabIndex = 5;
+			this.tbOutput.TabStop = false;
+			this.tbOutput.WordWrap = false;
 			// 
-			// RBHEX
+			// btnClear
 			// 
-			this.RBHEX.Location = new System.Drawing.Point(3, 39);
-			this.RBHEX.Name = "RBHEX";
-			this.RBHEX.Size = new System.Drawing.Size(85, 17);
-			this.RBHEX.TabIndex = 2;
-			this.RBHEX.TabStop = true;
-			this.RBHEX.Text = "HEX";
-			this.RBHEX.UseVisualStyleBackColor = true;
+			this.btnClear.Location = new System.Drawing.Point(165, 395);
+			this.btnClear.Name = "btnClear";
+			this.btnClear.Size = new System.Drawing.Size(97, 23);
+			this.btnClear.TabIndex = 6;
+			this.btnClear.Text = "Clear Serial Port";
+			this.btnClear.UseVisualStyleBackColor = true;
+			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
 			// 
 			// MainScreen
 			// 
@@ -368,12 +384,13 @@
 		private System.Windows.Forms.Button BtnOpen;
 		private System.Windows.Forms.Button BtnClose;
 		private System.Windows.Forms.Button BtnSend;
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Label lblPortWindow;
+		private System.Windows.Forms.TextBox tbInput;
 		private System.Windows.Forms.Label lblPortBlock;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
 		private System.Windows.Forms.RadioButton RBText;
 		private System.Windows.Forms.RadioButton RBHEX;
+		private System.Windows.Forms.TextBox tbOutput;
+		private System.Windows.Forms.Button btnClear;
 	}
 }
 

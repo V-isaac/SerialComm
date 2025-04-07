@@ -20,7 +20,7 @@ namespace SerialCommunication {
 		void Received(object sender, SerialDataReceivedEventArgs e) {
 			Thread.Sleep(500);
 			try {
-				string data = _serialPort.ReadLine();
+				string data = _serialPort.ReadLine() + "\r\n";
 				this.BeginInvoke(new SetTextDeleg(DataUpdate),
 													new object[] { data });
 			}
@@ -34,7 +34,7 @@ namespace SerialCommunication {
 
 		// updates lable window with data
 		private void DataUpdate(string data){
-			lblPortWindow.Text += data.Trim() + "\n\r";
+			tbOutput.AppendText(data); // \x0d\x0a
 		}
 
 
@@ -48,7 +48,7 @@ namespace SerialCommunication {
 			foreach (string s in SerialPort.GetPortNames()){
 				CBPort.Items.Add(s);
 			}
-			CBPort.Text = Convert.ToString(CBPort.Items[1]);
+			CBPort.Text = Convert.ToString(CBPort.Items[0]);
 		}
 
 		private void BtnOpen_Click(object sender, EventArgs e) {
@@ -88,6 +88,22 @@ namespace SerialCommunication {
 			catch(Exception err){ 
 				MessageBox.Show ("Ошибка в закрытии последовательного порта :: " + _serialPort.PortName + " " + err.Message, "Ошибка закрытия");
 			}
+		}
+
+		private void btnClear_Click(Object sender, EventArgs e) {
+			tbOutput.Text = "";
+		}
+
+		private void BtnSend_Click(Object sender, EventArgs e) {
+			try {
+				string data = tbInput.Text;
+				_serialPort.Write(data);
+				tbInput.Text = "";
+			}
+			catch (Exception err) { 
+				MessageBox.Show ("Время ожидания отправки истекло \n\rили порт закрыт :: " + _serialPort.PortName + " " + err, " Ошибка порта");
+			}
+
 		}
 	}
 }
