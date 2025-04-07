@@ -23,8 +23,6 @@
 		/// содержимое этого метода с помощью редактора кода.
 		/// </summary>
 		private void InitializeComponent() {
-			this.BtnOpen = new System.Windows.Forms.Button();
-			this.BtnClose = new System.Windows.Forms.Button();
 			this.FlowPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.lblPort = new System.Windows.Forms.Label();
 			this.CBPort = new System.Windows.Forms.ComboBox();
@@ -33,40 +31,26 @@
 			this.lblParity = new System.Windows.Forms.Label();
 			this.CBParity = new System.Windows.Forms.ComboBox();
 			this.lblStopBit = new System.Windows.Forms.Label();
-			this.CPStopBit = new System.Windows.Forms.ComboBox();
+			this.CBStopBit = new System.Windows.Forms.ComboBox();
 			this.lblDataBits = new System.Windows.Forms.Label();
 			this.CBBits = new System.Windows.Forms.ComboBox();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.BtnSend = new System.Windows.Forms.Button();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.lblViewBlock = new System.Windows.Forms.Label();
-			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-			this.lblPortBlock = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
 			this.btnExit = new System.Windows.Forms.Button();
+			this.btnCheck = new System.Windows.Forms.Button();
+			this.BtnOpen = new System.Windows.Forms.Button();
+			this.BtnClose = new System.Windows.Forms.Button();
+			this.BtnSend = new System.Windows.Forms.Button();
+			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.lblPortWindow = new System.Windows.Forms.Label();
+			this.lblPortBlock = new System.Windows.Forms.Label();
+			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+			this.RBText = new System.Windows.Forms.RadioButton();
+			this.RBHEX = new System.Windows.Forms.RadioButton();
 			this.FlowPanel.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel2.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// BtnOpen
-			// 
-			this.BtnOpen.Location = new System.Drawing.Point(84, 388);
-			this.BtnOpen.Name = "BtnOpen";
-			this.BtnOpen.Size = new System.Drawing.Size(75, 23);
-			this.BtnOpen.TabIndex = 0;
-			this.BtnOpen.Text = "Open";
-			this.BtnOpen.UseVisualStyleBackColor = true;
-			// 
-			// BtnClose
-			// 
-			this.BtnClose.Enabled = false;
-			this.BtnClose.Location = new System.Drawing.Point(3, 388);
-			this.BtnClose.Name = "BtnClose";
-			this.BtnClose.Size = new System.Drawing.Size(75, 23);
-			this.BtnClose.TabIndex = 1;
-			this.BtnClose.Text = "Close";
-			this.BtnClose.UseVisualStyleBackColor = true;
 			// 
 			// FlowPanel
 			// 
@@ -78,7 +62,7 @@
 			this.FlowPanel.Controls.Add(this.lblParity);
 			this.FlowPanel.Controls.Add(this.CBParity);
 			this.FlowPanel.Controls.Add(this.lblStopBit);
-			this.FlowPanel.Controls.Add(this.CPStopBit);
+			this.FlowPanel.Controls.Add(this.CBStopBit);
 			this.FlowPanel.Controls.Add(this.lblDataBits);
 			this.FlowPanel.Controls.Add(this.CBBits);
 			this.FlowPanel.Location = new System.Drawing.Point(692, 12);
@@ -118,25 +102,25 @@
 			// 
 			this.CBBaud.FormattingEnabled = true;
 			this.CBBaud.Items.AddRange(new object[] {
-								"300",
-								"600",
-								"750",
-								"1200",
-								"2400",
-								"9600",
-								"19200",
-								"31250",
-								"38400",
-								"57600",
-								"74880",
-								"115200",
-								"230400",
-								"250000",
-								"460800",
-								"500000",
-								"921600",
-								"1000000",
-								"2000000"});
+            "300",
+            "600",
+            "750",
+            "1200",
+            "2400",
+            "9600",
+            "19200",
+            "31250",
+            "38400",
+            "57600",
+            "74880",
+            "115200",
+            "230400",
+            "250000",
+            "460800",
+            "500000",
+            "921600",
+            "1000000",
+            "2000000"});
 			this.CBBaud.Location = new System.Drawing.Point(3, 56);
 			this.CBBaud.Name = "CBBaud";
 			this.CBBaud.Size = new System.Drawing.Size(85, 21);
@@ -156,11 +140,11 @@
 			// 
 			this.CBParity.FormattingEnabled = true;
 			this.CBParity.Items.AddRange(new object[] {
-								"None",
-								"Odd",
-								"Even",
-								"Mark",
-								"Space"});
+            "None",
+            "Odd",
+            "Even",
+            "Mark",
+            "Space"});
 			this.CBParity.Location = new System.Drawing.Point(3, 96);
 			this.CBParity.Name = "CBParity";
 			this.CBParity.Size = new System.Drawing.Size(85, 21);
@@ -176,19 +160,19 @@
 			this.lblStopBit.TabIndex = 10;
 			this.lblStopBit.Text = "Бит остановки:";
 			// 
-			// CPStopBit
+			// CBStopBit
 			// 
-			this.CPStopBit.FormattingEnabled = true;
-			this.CPStopBit.Items.AddRange(new object[] {
-								"None",
-								"One",
-								"OnePointFive",
-								"Two"});
-			this.CPStopBit.Location = new System.Drawing.Point(3, 136);
-			this.CPStopBit.Name = "CPStopBit";
-			this.CPStopBit.Size = new System.Drawing.Size(85, 21);
-			this.CPStopBit.TabIndex = 11;
-			this.CPStopBit.Text = "None";
+			this.CBStopBit.FormattingEnabled = true;
+			this.CBStopBit.Items.AddRange(new object[] {
+            "None",
+            "One",
+            "OnePointFive",
+            "Two"});
+			this.CBStopBit.Location = new System.Drawing.Point(3, 136);
+			this.CBStopBit.Name = "CBStopBit";
+			this.CBStopBit.Size = new System.Drawing.Size(85, 21);
+			this.CBStopBit.TabIndex = 11;
+			this.CBStopBit.Text = "One";
 			// 
 			// lblDataBits
 			// 
@@ -203,40 +187,26 @@
 			// 
 			this.CBBits.FormattingEnabled = true;
 			this.CBBits.Items.AddRange(new object[] {
-								"5",
-								"6",
-								"7",
-								"8"});
+            "5",
+            "6",
+            "7",
+            "8"});
 			this.CBBits.Location = new System.Drawing.Point(3, 176);
 			this.CBBits.Name = "CBBits";
 			this.CBBits.Size = new System.Drawing.Size(85, 21);
 			this.CBBits.TabIndex = 13;
 			this.CBBits.Text = "8";
 			// 
-			// textBox1
-			// 
-			this.textBox1.Location = new System.Drawing.Point(3, 359);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(579, 20);
-			this.textBox1.TabIndex = 3;
-			// 
-			// BtnSend
-			// 
-			this.BtnSend.Location = new System.Drawing.Point(588, 359);
-			this.BtnSend.Name = "BtnSend";
-			this.BtnSend.Size = new System.Drawing.Size(75, 23);
-			this.BtnSend.TabIndex = 4;
-			this.BtnSend.Text = "Send";
-			this.BtnSend.UseVisualStyleBackColor = true;
-			// 
 			// flowLayoutPanel1
 			// 
 			this.flowLayoutPanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.flowLayoutPanel1.Controls.Add(this.lblViewBlock);
+			this.flowLayoutPanel1.Controls.Add(this.RBText);
+			this.flowLayoutPanel1.Controls.Add(this.RBHEX);
 			this.flowLayoutPanel1.Location = new System.Drawing.Point(692, 218);
 			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(5);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(96, 93);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(96, 60);
 			this.flowLayoutPanel1.TabIndex = 14;
 			// 
 			// lblViewBlock
@@ -248,38 +218,6 @@
 			this.lblViewBlock.TabIndex = 0;
 			this.lblViewBlock.Text = "Вид:";
 			// 
-			// flowLayoutPanel2
-			// 
-			this.flowLayoutPanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.flowLayoutPanel2.Controls.Add(this.lblPortBlock);
-			this.flowLayoutPanel2.Controls.Add(this.label3);
-			this.flowLayoutPanel2.Controls.Add(this.textBox1);
-			this.flowLayoutPanel2.Controls.Add(this.BtnSend);
-			this.flowLayoutPanel2.Controls.Add(this.BtnClose);
-			this.flowLayoutPanel2.Controls.Add(this.BtnOpen);
-			this.flowLayoutPanel2.Location = new System.Drawing.Point(14, 12);
-			this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(5);
-			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-			this.flowLayoutPanel2.Size = new System.Drawing.Size(674, 424);
-			this.flowLayoutPanel2.TabIndex = 15;
-			// 
-			// lblPortBlock
-			// 
-			this.lblPortBlock.Location = new System.Drawing.Point(3, 0);
-			this.lblPortBlock.Name = "lblPortBlock";
-			this.lblPortBlock.Size = new System.Drawing.Size(29, 22);
-			this.lblPortBlock.TabIndex = 0;
-			this.lblPortBlock.Text = "Вид:";
-			// 
-			// label3
-			// 
-			this.label3.BackColor = System.Drawing.SystemColors.Window;
-			this.label3.Location = new System.Drawing.Point(3, 22);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(666, 334);
-			this.label3.TabIndex = 1;
-			this.label3.Text = "Port Window";
-			// 
 			// btnExit
 			// 
 			this.btnExit.Location = new System.Drawing.Point(692, 413);
@@ -290,11 +228,111 @@
 			this.btnExit.UseVisualStyleBackColor = true;
 			this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
 			// 
+			// btnCheck
+			// 
+			this.btnCheck.Location = new System.Drawing.Point(692, 286);
+			this.btnCheck.Name = "btnCheck";
+			this.btnCheck.Size = new System.Drawing.Size(96, 23);
+			this.btnCheck.TabIndex = 16;
+			this.btnCheck.Text = "Check ports";
+			this.btnCheck.UseVisualStyleBackColor = true;
+			this.btnCheck.Click += new System.EventHandler(this.btnCheck_Click);
+			// 
+			// BtnOpen
+			// 
+			this.BtnOpen.Location = new System.Drawing.Point(84, 388);
+			this.BtnOpen.Name = "BtnOpen";
+			this.BtnOpen.Size = new System.Drawing.Size(75, 23);
+			this.BtnOpen.TabIndex = 0;
+			this.BtnOpen.Text = "Open";
+			this.BtnOpen.UseVisualStyleBackColor = true;
+			this.BtnOpen.Click += new System.EventHandler(this.BtnOpen_Click);
+			// 
+			// BtnClose
+			// 
+			this.BtnClose.Enabled = false;
+			this.BtnClose.Location = new System.Drawing.Point(3, 388);
+			this.BtnClose.Name = "BtnClose";
+			this.BtnClose.Size = new System.Drawing.Size(75, 23);
+			this.BtnClose.TabIndex = 1;
+			this.BtnClose.Text = "Close";
+			this.BtnClose.UseVisualStyleBackColor = true;
+			this.BtnClose.Click += new System.EventHandler(this.BtnClose_Click);
+			// 
+			// BtnSend
+			// 
+			this.BtnSend.Location = new System.Drawing.Point(588, 359);
+			this.BtnSend.Name = "BtnSend";
+			this.BtnSend.Size = new System.Drawing.Size(75, 23);
+			this.BtnSend.TabIndex = 4;
+			this.BtnSend.Text = "Send";
+			this.BtnSend.UseVisualStyleBackColor = true;
+			// 
+			// textBox1
+			// 
+			this.textBox1.Location = new System.Drawing.Point(3, 359);
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(579, 20);
+			this.textBox1.TabIndex = 3;
+			// 
+			// lblPortWindow
+			// 
+			this.lblPortWindow.BackColor = System.Drawing.SystemColors.Window;
+			this.lblPortWindow.Location = new System.Drawing.Point(3, 22);
+			this.lblPortWindow.Name = "lblPortWindow";
+			this.lblPortWindow.Size = new System.Drawing.Size(666, 334);
+			this.lblPortWindow.TabIndex = 1;
+			this.lblPortWindow.Text = "Port Window";
+			// 
+			// lblPortBlock
+			// 
+			this.lblPortBlock.Location = new System.Drawing.Point(3, 0);
+			this.lblPortBlock.Name = "lblPortBlock";
+			this.lblPortBlock.Size = new System.Drawing.Size(75, 22);
+			this.lblPortBlock.TabIndex = 0;
+			this.lblPortBlock.Text = "Выход порта:";
+			// 
+			// flowLayoutPanel2
+			// 
+			this.flowLayoutPanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.flowLayoutPanel2.Controls.Add(this.lblPortBlock);
+			this.flowLayoutPanel2.Controls.Add(this.lblPortWindow);
+			this.flowLayoutPanel2.Controls.Add(this.textBox1);
+			this.flowLayoutPanel2.Controls.Add(this.BtnSend);
+			this.flowLayoutPanel2.Controls.Add(this.BtnClose);
+			this.flowLayoutPanel2.Controls.Add(this.BtnOpen);
+			this.flowLayoutPanel2.Location = new System.Drawing.Point(14, 12);
+			this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(5);
+			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+			this.flowLayoutPanel2.Size = new System.Drawing.Size(674, 424);
+			this.flowLayoutPanel2.TabIndex = 15;
+			// 
+			// RBText
+			// 
+			this.RBText.Location = new System.Drawing.Point(3, 16);
+			this.RBText.Name = "RBText";
+			this.RBText.Size = new System.Drawing.Size(57, 17);
+			this.RBText.TabIndex = 1;
+			this.RBText.TabStop = true;
+			this.RBText.Text = "Text";
+			this.RBText.UseVisualStyleBackColor = true;
+			// 
+			// RBHEX
+			// 
+			this.RBHEX.Location = new System.Drawing.Point(3, 39);
+			this.RBHEX.Name = "RBHEX";
+			this.RBHEX.Size = new System.Drawing.Size(85, 17);
+			this.RBHEX.TabIndex = 2;
+			this.RBHEX.TabStop = true;
+			this.RBHEX.Text = "HEX";
+			this.RBHEX.UseVisualStyleBackColor = true;
+			// 
 			// MainScreen
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.btnCheck);
 			this.Controls.Add(this.flowLayoutPanel2);
 			this.Controls.Add(this.FlowPanel);
 			this.Controls.Add(this.flowLayoutPanel1);
@@ -312,12 +350,7 @@
 		}
 
 		#endregion
-
-		private System.Windows.Forms.Button BtnOpen;
-		private System.Windows.Forms.Button BtnClose;
 		private System.Windows.Forms.FlowLayoutPanel FlowPanel;
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Button BtnSend;
 		private System.Windows.Forms.Label lblPort;
 		private System.Windows.Forms.ComboBox CBPort;
 		private System.Windows.Forms.Label lblBaud;
@@ -325,15 +358,22 @@
 		private System.Windows.Forms.Label lblParity;
 		private System.Windows.Forms.ComboBox CBParity;
 		private System.Windows.Forms.Label lblStopBit;
-		private System.Windows.Forms.ComboBox CPStopBit;
+		private System.Windows.Forms.ComboBox CBStopBit;
 		private System.Windows.Forms.Label lblDataBits;
 		private System.Windows.Forms.ComboBox CBBits;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 		private System.Windows.Forms.Label lblViewBlock;
-		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-		private System.Windows.Forms.Label lblPortBlock;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button btnExit;
+		private System.Windows.Forms.Button btnCheck;
+		private System.Windows.Forms.Button BtnOpen;
+		private System.Windows.Forms.Button BtnClose;
+		private System.Windows.Forms.Button BtnSend;
+		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.Label lblPortWindow;
+		private System.Windows.Forms.Label lblPortBlock;
+		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+		private System.Windows.Forms.RadioButton RBText;
+		private System.Windows.Forms.RadioButton RBHEX;
 	}
 }
 
