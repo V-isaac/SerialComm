@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO.Ports;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -20,8 +21,9 @@ namespace SerialCommunication {
 		void Received(object sender, SerialDataReceivedEventArgs e) {
 			Thread.Sleep(500);
 			try {
-				string data = _serialPort.ReadLine() + "\r\n";
-				this.BeginInvoke(new SetTextDeleg(DataUpdate),
+				string data = "";
+					data = _serialPort.ReadLine();
+				this.BeginInvoke( new SetTextDeleg(DataUpdate),
 													new object[] { data });
 			}
 			catch (TimeoutException) { 
@@ -34,7 +36,17 @@ namespace SerialCommunication {
 
 		// updates lable window with data
 		private void DataUpdate(string data){
-			tbOutput.AppendText(data); // \x0d\x0a
+			string d = "";
+
+			if (RBHEX.Checked){ 
+				d = string.Join("", data.Select(c => String.Format("{0:X2}", Convert.ToInt32(c))));
+				tbOutput.AppendText(d);
+			}
+			else{ tbOutput.AppendText(data);}
+
+			
+			if (IsEscaping.Checked) { tbOutput.AppendText("\r\n"); }
+			
 		}
 
 

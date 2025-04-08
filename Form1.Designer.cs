@@ -48,6 +48,8 @@
 			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
 			this.tbOutput = new System.Windows.Forms.TextBox();
 			this.btnClear = new System.Windows.Forms.Button();
+			this.RBBin = new System.Windows.Forms.RadioButton();
+			this.IsEscaping = new System.Windows.Forms.CheckBox();
 			this.FlowPanel.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel2.SuspendLayout();
@@ -204,10 +206,12 @@
 			this.flowLayoutPanel1.Controls.Add(this.lblViewBlock);
 			this.flowLayoutPanel1.Controls.Add(this.RBText);
 			this.flowLayoutPanel1.Controls.Add(this.RBHEX);
+			this.flowLayoutPanel1.Controls.Add(this.RBBin);
+			this.flowLayoutPanel1.Controls.Add(this.IsEscaping);
 			this.flowLayoutPanel1.Location = new System.Drawing.Point(692, 218);
 			this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(5);
 			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-			this.flowLayoutPanel1.Size = new System.Drawing.Size(96, 60);
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(96, 109);
 			this.flowLayoutPanel1.TabIndex = 14;
 			// 
 			// lblViewBlock
@@ -221,6 +225,7 @@
 			// 
 			// RBText
 			// 
+			this.RBText.Checked = true;
 			this.RBText.Location = new System.Drawing.Point(3, 16);
 			this.RBText.Name = "RBText";
 			this.RBText.Size = new System.Drawing.Size(57, 17);
@@ -235,7 +240,6 @@
 			this.RBHEX.Name = "RBHEX";
 			this.RBHEX.Size = new System.Drawing.Size(85, 17);
 			this.RBHEX.TabIndex = 2;
-			this.RBHEX.TabStop = true;
 			this.RBHEX.Text = "HEX";
 			this.RBHEX.UseVisualStyleBackColor = true;
 			// 
@@ -251,7 +255,7 @@
 			// 
 			// btnCheck
 			// 
-			this.btnCheck.Location = new System.Drawing.Point(692, 286);
+			this.btnCheck.Location = new System.Drawing.Point(692, 350);
 			this.btnCheck.Name = "btnCheck";
 			this.btnCheck.Size = new System.Drawing.Size(96, 23);
 			this.btnCheck.TabIndex = 16;
@@ -343,6 +347,27 @@
 			this.btnClear.UseVisualStyleBackColor = true;
 			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
 			// 
+			// RBBin
+			// 
+			this.RBBin.Location = new System.Drawing.Point(3, 62);
+			this.RBBin.Name = "RBBin";
+			this.RBBin.Size = new System.Drawing.Size(85, 17);
+			this.RBBin.TabIndex = 3;
+			this.RBBin.Text = "Binary";
+			this.RBBin.UseVisualStyleBackColor = true;
+			// 
+			// IsEscaping
+			// 
+			this.IsEscaping.AutoSize = true;
+			this.IsEscaping.Checked = true;
+			this.IsEscaping.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.IsEscaping.Location = new System.Drawing.Point(3, 85);
+			this.IsEscaping.Name = "IsEscaping";
+			this.IsEscaping.Size = new System.Drawing.Size(45, 17);
+			this.IsEscaping.TabIndex = 4;
+			this.IsEscaping.Text = "\\r\\n";
+			this.IsEscaping.UseVisualStyleBackColor = true;
+			// 
 			// MainScreen
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -391,6 +416,8 @@
 		private System.Windows.Forms.RadioButton RBHEX;
 		private System.Windows.Forms.TextBox tbOutput;
 		private System.Windows.Forms.Button btnClear;
+		private System.Windows.Forms.RadioButton RBBin;
+		private System.Windows.Forms.CheckBox IsEscaping;
 	}
 }
 
