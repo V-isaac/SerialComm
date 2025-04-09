@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Drawing.Text;
 using System.IO.Ports;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace SerialCommunication {
 	public partial class MainScreen : Form {
-		public MainScreen(){ InitializeComponent();
-	}
-		
+		public MainScreen(){ InitializeComponent(); }
+			
+		bool isEnabled = false;
 		SerialPort  _serialPort = new SerialPort(	"COM1",
 																							115200,
 																							Parity.None,
@@ -22,31 +24,32 @@ namespace SerialCommunication {
 			Thread.Sleep(500);
 			try {
 				string data = "";
-					data = _serialPort.ReadLine();
+				data = _serialPort.ReadLine();
+
 				this.BeginInvoke( new SetTextDeleg(DataUpdate),
-													new object[] { data });
+													new object[] { data } );
 			}
-			catch (TimeoutException) { 
-				MessageBox.Show ("Устройство не отвечает в течении 5 секунд :: " + _serialPort.PortName, "Ошибка чтения");
+			catch (Exception err) { 
+				MessageBox.Show ("Устройство не ответило :: " + _serialPort.PortName + " " + err, "Ошибка чтения");
 				_serialPort.Close();
-				BtnClose.Enabled = false;
-				BtnOpen.Enabled = true;
+
+				isEnabled = !isEnabled;
+				SwitchElements(isEnabled);
 			}
 		}
 
 		// updates lable window with data
 		private void DataUpdate(string data){
+
 			string d = "";
 
 			if (RBHEX.Checked){ 
 				d = string.Join("", data.Select(c => String.Format("{0:X2}", Convert.ToInt32(c))));
 				tbOutput.AppendText(d);
 			}
-			else{ tbOutput.AppendText(data);}
-
+			else { tbOutput.AppendText(data); }
 			
 			if (IsEscaping.Checked) { tbOutput.AppendText("\r\n"); }
-			
 		}
 
 
@@ -69,35 +72,37 @@ namespace SerialCommunication {
 			_serialPort.Parity		= (Parity)Enum.Parse(typeof(Parity), Convert.ToString(CBParity.SelectedItem));
 			_serialPort.DataBits	= Convert.ToInt32(CBBits.Text);
 			_serialPort.StopBits	= (StopBits)Enum.Parse(typeof(StopBits), Convert.ToString(CBStopBit.SelectedItem));
-			_serialPort.Handshake	= Handshake.None;
+			_serialPort.Handshake	= Handshake.RequestToSend;
 
-			_serialPort.ReadTimeout = 5000;
-			_serialPort.WriteTimeout = 5000;
+			_serialPort.ReadTimeout = 500;
+			_serialPort.WriteTimeout = 500;
 
 			try { 
 				if(! _serialPort.IsOpen){ 
 					_serialPort.Open(); 
 					_serialPort.DataReceived += new SerialDataReceivedEventHandler(Received);
+					
 
-					BtnClose.Enabled = true;
-					BtnOpen.Enabled = false;
+					isEnabled = !isEnabled;
+					SwitchElements(isEnabled);
 				}
 			}
-			catch(Exception err){ 
+			catch (Exception err) { 
 				MessageBox.Show ("Ошибка в открытии последовательного порта :: " + _serialPort.PortName + " " + err.Message, "Ошибка открытия");
 			}
-	}
+		}
 
 
 		private void BtnClose_Click(object sender, EventArgs e) {
-			try{ 
-				if(_serialPort.IsOpen){ 
+			try {
+				if (_serialPort.IsOpen) {
 					_serialPort.Close();
-					BtnClose.Enabled = false;
-					BtnOpen.Enabled = true;
+
+					isEnabled = !isEnabled;
+					SwitchElements(isEnabled);
 				}
 			}
-			catch(Exception err){ 
+			catch (Exception err) { 
 				MessageBox.Show ("Ошибка в закрытии последовательного порта :: " + _serialPort.PortName + " " + err.Message, "Ошибка закрытия");
 			}
 		}
@@ -115,7 +120,20 @@ namespace SerialCommunication {
 			catch (Exception err) { 
 				MessageBox.Show ("Время ожидания отправки истекло \n\rили порт закрыт :: " + _serialPort.PortName + " " + err, " Ошибка порта");
 			}
+		}
 
+		private void SwitchElements(bool en){
+			en = !en;
+			BtnClose.Enabled = !en;
+			BtnSend.Enabled = !en;
+			tbInput.Enabled = !en;
+			BtnOpen.Enabled = en;
+			CBPort.Enabled = en;
+			CBBaud.Enabled = en;
+			CBParity.Enabled = en;
+			CBStopBit.Enabled = en;
+			CBBits.Enabled = en;
+			btnCheck.Enabled = en;
 		}
 	}
 }
