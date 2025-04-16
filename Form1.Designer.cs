@@ -23,8 +23,8 @@
 		/// содержимое этого метода с помощью редактора кода.
 		/// </summary>
 		private void InitializeComponent() {
-			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-			System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+			System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+			System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
 			this.FlowPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.lblPort = new System.Windows.Forms.Label();
 			this.CBPort = new System.Windows.Forms.ComboBox();
@@ -49,12 +49,14 @@
 			this.BtnSend = new System.Windows.Forms.Button();
 			this.tbInput = new System.Windows.Forms.TextBox();
 			this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-			this.tbOutput = new System.Windows.Forms.TextBox();
-			this.btnClear = new System.Windows.Forms.Button();
 			this.SerialTabs = new System.Windows.Forms.TabControl();
 			this.TabPort = new System.Windows.Forms.TabPage();
+			this.tbOutput = new System.Windows.Forms.TextBox();
 			this.TabGraph = new System.Windows.Forms.TabPage();
 			this.Chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+			this.btnClear = new System.Windows.Forms.Button();
+			this.BtnClearGraph = new System.Windows.Forms.Button();
+			this.GraphName = new System.Windows.Forms.TextBox();
 			this.FlowPanel.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel2.SuspendLayout();
@@ -341,35 +343,11 @@
 			this.flowLayoutPanel2.Controls.Add(this.BtnSend);
 			this.flowLayoutPanel2.Controls.Add(this.BtnClose);
 			this.flowLayoutPanel2.Controls.Add(this.BtnOpen);
-			this.flowLayoutPanel2.Controls.Add(this.btnClear);
 			this.flowLayoutPanel2.Location = new System.Drawing.Point(14, 12);
 			this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(5);
 			this.flowLayoutPanel2.Name = "flowLayoutPanel2";
 			this.flowLayoutPanel2.Size = new System.Drawing.Size(674, 424);
 			this.flowLayoutPanel2.TabIndex = 15;
-			// 
-			// tbOutput
-			// 
-			this.tbOutput.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.tbOutput.Location = new System.Drawing.Point(3, 3);
-			this.tbOutput.Multiline = true;
-			this.tbOutput.Name = "tbOutput";
-			this.tbOutput.ReadOnly = true;
-			this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.tbOutput.Size = new System.Drawing.Size(646, 326);
-			this.tbOutput.TabIndex = 5;
-			this.tbOutput.TabStop = false;
-			this.tbOutput.WordWrap = false;
-			// 
-			// btnClear
-			// 
-			this.btnClear.Location = new System.Drawing.Point(165, 396);
-			this.btnClear.Name = "btnClear";
-			this.btnClear.Size = new System.Drawing.Size(97, 23);
-			this.btnClear.TabIndex = 6;
-			this.btnClear.Text = "Clear Serial Port";
-			this.btnClear.UseVisualStyleBackColor = true;
-			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
 			// 
 			// SerialTabs
 			// 
@@ -384,6 +362,7 @@
 			// TabPort
 			// 
 			this.TabPort.Controls.Add(this.tbOutput);
+			this.TabPort.Controls.Add(this.btnClear);
 			this.TabPort.Location = new System.Drawing.Point(4, 22);
 			this.TabPort.Name = "TabPort";
 			this.TabPort.Padding = new System.Windows.Forms.Padding(3);
@@ -392,9 +371,24 @@
 			this.TabPort.Text = "Монитор";
 			this.TabPort.UseVisualStyleBackColor = true;
 			// 
+			// tbOutput
+			// 
+			this.tbOutput.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.tbOutput.Location = new System.Drawing.Point(3, 3);
+			this.tbOutput.Multiline = true;
+			this.tbOutput.Name = "tbOutput";
+			this.tbOutput.ReadOnly = true;
+			this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.tbOutput.Size = new System.Drawing.Size(646, 300);
+			this.tbOutput.TabIndex = 5;
+			this.tbOutput.TabStop = false;
+			this.tbOutput.WordWrap = false;
+			// 
 			// TabGraph
 			// 
+			this.TabGraph.Controls.Add(this.BtnClearGraph);
 			this.TabGraph.Controls.Add(this.Chart);
+			this.TabGraph.Controls.Add(this.GraphName);
 			this.TabGraph.Location = new System.Drawing.Point(4, 22);
 			this.TabGraph.Name = "TabGraph";
 			this.TabGraph.Padding = new System.Windows.Forms.Padding(3);
@@ -405,14 +399,42 @@
 			// 
 			// Chart
 			// 
-			chartArea1.Name = "ChartArea1";
-			this.Chart.ChartAreas.Add(chartArea1);
-			legend1.Name = "Legend";
-			this.Chart.Legends.Add(legend1);
-			this.Chart.Location = new System.Drawing.Point(4, 4);
+			chartArea2.Name = "ChartArea1";
+			this.Chart.ChartAreas.Add(chartArea2);
+			legend2.Name = "Legend";
+			this.Chart.Legends.Add(legend2);
+			this.Chart.Location = new System.Drawing.Point(3, 3);
 			this.Chart.Name = "Chart";
-			this.Chart.Size = new System.Drawing.Size(648, 322);
+			this.Chart.Size = new System.Drawing.Size(648, 296);
 			this.Chart.TabIndex = 0;
+			// 
+			// btnClear
+			// 
+			this.btnClear.Location = new System.Drawing.Point(6, 306);
+			this.btnClear.Name = "btnClear";
+			this.btnClear.Size = new System.Drawing.Size(97, 23);
+			this.btnClear.TabIndex = 6;
+			this.btnClear.Text = "Clear Serial Port";
+			this.btnClear.UseVisualStyleBackColor = true;
+			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+			// 
+			// BtnClearGraph
+			// 
+			this.BtnClearGraph.Location = new System.Drawing.Point(6, 305);
+			this.BtnClearGraph.Name = "BtnClearGraph";
+			this.BtnClearGraph.Size = new System.Drawing.Size(101, 23);
+			this.BtnClearGraph.TabIndex = 7;
+			this.BtnClearGraph.Text = "Clear Serial Graph";
+			this.BtnClearGraph.UseVisualStyleBackColor = true;
+			this.BtnClearGraph.Click += new System.EventHandler(this.BtnClearGraph_Click);
+			// 
+			// GraphName
+			// 
+			this.GraphName.Location = new System.Drawing.Point(113, 306);
+			this.GraphName.Name = "GraphName";
+			this.GraphName.Size = new System.Drawing.Size(538, 20);
+			this.GraphName.TabIndex = 8;
+			this.GraphName.Text = "Chart name";
 			// 
 			// MainScreen
 			// 
@@ -436,6 +458,7 @@
 			this.TabPort.ResumeLayout(false);
 			this.TabPort.PerformLayout();
 			this.TabGraph.ResumeLayout(false);
+			this.TabGraph.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.Chart)).EndInit();
 			this.ResumeLayout(false);
 
@@ -472,6 +495,8 @@
 		private System.Windows.Forms.TabPage TabPort;
 		private System.Windows.Forms.TabPage TabGraph;
 		private System.Windows.Forms.DataVisualization.Charting.Chart Chart;
+		private System.Windows.Forms.Button BtnClearGraph;
+		private System.Windows.Forms.TextBox GraphName;
 	}
 }
 

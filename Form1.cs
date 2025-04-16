@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace SerialCommunication {
 	public partial class MainScreen : Form {
@@ -19,6 +20,7 @@ namespace SerialCommunication {
 
 		// deliage for inter-thread communication
 		private delegate void SetTextDeleg(string text);
+
 		// excecutes on data in
 		void Received(object sender, SerialDataReceivedEventArgs e) {
 			Thread.Sleep(500);
@@ -38,18 +40,21 @@ namespace SerialCommunication {
 			}
 		}
 
-		// updates lable window with data
 		private void DataUpdate(string data){
 
 			string d = "";
-
+			
+			// serial port output bit
 			if (RBHEX.Checked){ 
 				d = string.Join("", data.Select(c => String.Format("{0:X2}", Convert.ToInt32(c))));
 				tbOutput.AppendText(d);
 			}
 			else { tbOutput.AppendText(data); }
 			
-			if (IsEscaping.Checked) { tbOutput.AppendText("\r\n"); }
+			if (IsEscaping.Checked) { tbOutput.AppendText("\n"); }
+
+			// serial plot output bit
+
 		}
 
 
@@ -77,12 +82,26 @@ namespace SerialCommunication {
 			_serialPort.ReadTimeout = 500;
 			_serialPort.WriteTimeout = 500;
 
+			
 			try { 
 				if(! _serialPort.IsOpen){ 
 					_serialPort.Open(); 
 					_serialPort.DataReceived += new SerialDataReceivedEventHandler(Received);
-					
 
+					if(!Chart.Series.Any()){
+						Chart.Series.Add(GraphName.Text);
+					} 
+					else{
+						for (int i = 0; i < Chart.Series.Count; i++) {
+							if (Chart.Series[i].Name == GraphName.Text) { 
+								MessageBox.Show("Нового графика не было построено. Свопадает имя с уже существующим", "Ошибка постройки графика");	
+							}
+							else{ 
+								Chart.Series.Add(GraphName.Text);
+							} 
+						}
+					}
+					
 					isEnabled = !isEnabled;
 					SwitchElements(isEnabled);
 				}
@@ -124,8 +143,10 @@ namespace SerialCommunication {
 
 		private void SwitchElements(bool en){
 			en = !en;
+
 			BtnClose.Enabled = !en;
 			BtnSend.Enabled = !en;
+
 			tbInput.Enabled = !en;
 			BtnOpen.Enabled = en;
 			CBPort.Enabled = en;
@@ -134,6 +155,13 @@ namespace SerialCommunication {
 			CBStopBit.Enabled = en;
 			CBBits.Enabled = en;
 			btnCheck.Enabled = en;
+
+			BtnClearGraph.Enabled = !en;
+			GraphName.Visible = en;
+		}
+
+		private void BtnClearGraph_Click(object sender, EventArgs e) {
+			Chart.Series[0].Points.Clear();
 		}
 	}
 }
