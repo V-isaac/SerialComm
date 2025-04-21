@@ -61,7 +61,7 @@ namespace SerialCommunication {
 
 
 		private void btnExit_Click(object sender, EventArgs e) {
-			_serialPort.Close();
+			if(_serialPort.IsOpen) _serialPort.Close();
 			Close(); 
 		}
 
@@ -117,6 +117,8 @@ namespace SerialCommunication {
 		private void BtnClose_Click(object sender, EventArgs e) {
 			try {
 				if (_serialPort.IsOpen) {
+					_serialPort.DiscardInBuffer();
+					_serialPort.DiscardOutBuffer();
 					_serialPort.Close();
 
 					isEnabled = !isEnabled;
