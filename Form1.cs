@@ -25,6 +25,8 @@ namespace SerialCommunication {
 		void Received(object sender, SerialDataReceivedEventArgs e) {
 			Thread.Sleep(500);
 			try {
+				if (!_serialPort.IsOpen) { return; } // if port somehow got closed preemptively - return
+				
 				string data = "";
 				data = _serialPort.ReadLine();
 
