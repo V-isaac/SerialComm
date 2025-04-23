@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing.Text;
 using System.IO.Ports;
 using System.Linq;
@@ -23,10 +24,10 @@ namespace SerialCommunication {
 
 		// excecutes on data in
 		void Received(object sender, SerialDataReceivedEventArgs e) {
-			Thread.Sleep(500);
+			Thread.Sleep(100);
 			try {
-				if (!_serialPort.IsOpen) { return; } // if port somehow got closed preemptively - return
-				
+				if (!_serialPort.IsOpen) { return; }
+
 				string data = "";
 				data = _serialPort.ReadLine();
 
@@ -53,18 +54,42 @@ namespace SerialCommunication {
 			}
 			else { tbOutput.AppendText(data); }
 			
-			if (IsEscaping.Checked) { tbOutput.AppendText("\n"); }
+			if (IsEscaping.Checked) { tbOutput.AppendText("\n"); } // usually \n\r, but C# did me dirty
 
 			// serial plot output bit
+			// data == text
+			int index = data.IndexOf('\t');
+			double oldX = -1.0;
 
+			if (index >= 0){ 
+				string dataX = data.Substring(0,index);
+				string dataY = data.Substring(index + 1); // right after \t
+				
+				double x = Convert.ToDouble(dataX, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+				double y = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+
+				Debug.WriteLine(dataX + ".." + dataY + " " + x + ".." + y);
+				
+				int chartIndex = Chart.Series.IndexOf(GraphName.Text);
+
+				// BOLD ASSUMPTION - VALUES DON'T WRAP
+				// check if there is a value in collection? 
+				if(x == oldX){ 
+					// either delete point and add new one or somehow replace Y at existing one
+				} 
+				else Chart.Series[chartIndex].Points.AddXY(x,y);
+
+				oldX = x;
+			}
 		}
 
-
+		// closing the program 
 		private void btnExit_Click(object sender, EventArgs e) {
 			if(_serialPort.IsOpen) _serialPort.Close();
 			Close(); 
 		}
 
+	// checking available ports
 		private void btnCheck_Click(object sender, EventArgs e) {
 			CBPort.Items.Clear();
 			foreach (string s in SerialPort.GetPortNames()){
@@ -73,6 +98,7 @@ namespace SerialCommunication {
 			CBPort.Text = Convert.ToString(CBPort.Items[0]);
 		}
 
+		// port opening and chart editing			
 		private void BtnOpen_Click(object sender, EventArgs e) {
 			_serialPort.PortName	= CBPort.Text;
 			_serialPort.BaudRate	= Convert.ToInt32(CBBaud.Text);
@@ -84,22 +110,27 @@ namespace SerialCommunication {
 			_serialPort.ReadTimeout = 500;
 			_serialPort.WriteTimeout = 500;
 
-			
 			try { 
-				if(! _serialPort.IsOpen){ 
+				if(! _serialPort.IsOpen) { 
 					_serialPort.Open(); 
 					_serialPort.DataReceived += new SerialDataReceivedEventHandler(Received);
 
-					if(!Chart.Series.Any()){
+					if(Chart.Series.Any() == false) { // if there aren't any graphs - create one
 						Chart.Series.Add(GraphName.Text);
+						int i;
+						i = Chart.Series.IndexOf(GraphName.Text);
+						Chart.Series[i].ChartType = SeriesChartType.Spline;
 					} 
-					else{
+					else { // otherwise check if any existing ones overlap
 						for (int i = 0; i < Chart.Series.Count; i++) {
 							if (Chart.Series[i].Name == GraphName.Text) { 
-								MessageBox.Show("Нового графика не было построено. Свопадает имя с уже существующим", "Ошибка постройки графика");	
+								MessageBox.Show("Нового графика не было построено.\n\rСвопадает имя с уже существующим", "Ошибка постройки графика");	
 							}
 							else{ 
 								Chart.Series.Add(GraphName.Text);
+								int j;
+								j = Chart.Series.IndexOf(GraphName.Text);
+								Chart.Series[j].ChartType = SeriesChartType.Spline;
 							} 
 						}
 					}
@@ -113,7 +144,7 @@ namespace SerialCommunication {
 			}
 		}
 
-
+		// attempt at closing the port
 		private void BtnClose_Click(object sender, EventArgs e) {
 			try {
 				if (_serialPort.IsOpen) {
