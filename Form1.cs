@@ -43,6 +43,13 @@ namespace SerialCommunication {
 			}
 		}
 
+		
+		const int pAmount = 200;
+		static double[,] points = new double[pAmount, 2];
+		string oldDataX = "";
+
+		static int ArrayIndex = 0;
+
 		private void DataUpdate(string data){
 
 			string d = "";
@@ -58,28 +65,47 @@ namespace SerialCommunication {
 
 			// serial plot output bit
 			// data == text
+			// BOLD ASSUMPTION - VALUES DON'T WRAP BACK, to infinity and beyond!
 			int index = data.IndexOf('\t');
-			double oldX = -1.0;
+			int chartIndex = Chart.Series.IndexOf(GraphName.Text);
 
 			if (index >= 0){ 
 				string dataX = data.Substring(0,index);
 				string dataY = data.Substring(index + 1); // right after \t
+
+				// Debug.WriteLine(dataX + "\t" + oldDataX);
+				// Debug.WriteLine(dataX == oldDataX);
 				
-				double x = Convert.ToDouble(dataX, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-				double y = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
 
-				Debug.WriteLine(dataX + ".." + dataY + " " + x + ".." + y);
-				
-				int chartIndex = Chart.Series.IndexOf(GraphName.Text);
+				// Debug.WriteLine(dataX + ".." + dataY + " " + points[ArrayIndex, 0] + ".." + points[ArrayIndex, 1]);
+				if (dataX == oldDataX){ 
+					points[ArrayIndex, 1] = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+				}
+				else{ 
+					if (ArrayIndex < pAmount - 1) { 
+						points[ArrayIndex, 0] = Convert.ToDouble(dataX, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+						points[ArrayIndex, 1] = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
 
-				// BOLD ASSUMPTION - VALUES DON'T WRAP
-				// check if there is a value in collection? 
-				if(x == oldX){ 
-					// either delete point and add new one or somehow replace Y at existing one
-				} 
-				else Chart.Series[chartIndex].Points.AddXY(x,y);
+						ArrayIndex++;
+					} 
+					else {
+						for (int x = 0; x < pAmount - 1; x++){ 
+							points[x, 0] = points[x+1, 0];
+							points[x, 1] = points[x+1, 1];
+						}
 
-				oldX = x;
+						points[pAmount-1, 0] = Convert.ToDouble(dataX, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+						points[pAmount-1, 1] = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+					} 
+				}
+
+				oldDataX = dataX;
+				// redraw chart
+				Chart.Series[chartIndex].Points.Clear();
+				for (int i = 0; i < pAmount; i++){ 
+					Chart.Series[chartIndex].Points.AddXY(points[i,0],points[i,1]);
+					// Debug.WriteLine(points[i, 0] + "\t" + points[i,1]);
+				}
 			}
 		}
 
@@ -154,6 +180,8 @@ namespace SerialCommunication {
 
 					isEnabled = !isEnabled;
 					SwitchElements(isEnabled);
+
+					ArrayIndex = 0;
 				}
 			}
 			catch (Exception err) { 
@@ -197,6 +225,8 @@ namespace SerialCommunication {
 
 		private void BtnClearGraph_Click(object sender, EventArgs e) {
 			Chart.Series[0].Points.Clear();
+			ArrayIndex = 0;
+			Array.Clear(points, 0, points.Length);
 		}
 	}
 }
