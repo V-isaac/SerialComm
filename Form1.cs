@@ -1,4 +1,7 @@
-﻿using System;
+﻿// definitions are ALWAYS at a top
+// #define OLD_LOGIC
+
+using System;
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.IO.Ports;
@@ -24,12 +27,13 @@ namespace SerialCommunication {
 
 		// excecutes on data in
 		void Received(object sender, SerialDataReceivedEventArgs e) {
-			Thread.Sleep(100);
+			Thread.Sleep(50);
 			try {
 				if (!_serialPort.IsOpen) { return; }
 
 				string data = "";
 				data = _serialPort.ReadLine();
+				Debug.Print(data);
 
 				this.BeginInvoke( new SetTextDeleg(DataUpdate),
 													new object[] { data } );
@@ -42,60 +46,112 @@ namespace SerialCommunication {
 				SwitchElements(isEnabled);
 			}
 		}
-
 		
-		const int pAmount = 200;
-		static double[,] points = new double[pAmount, 2];
+		public const int pAmount = 53;
+		public static double[,] points = new double[pAmount, 2];
+		public void setPoints(double x, double y){ 
+			for (int i = 0; i < pAmount; i++){ 
+					points[i, 0] = x;
+					points[i, 1] = y;
+			}
+		}
+		bool first = true;
+
 		string oldDataX = "";
 
 		static int ArrayIndex = 0;
+		double doubleX;
+		double doubleY;
+		int lastIndex;
+		bool match = true;
+
+		/* ----- code for testing (upload to arduino) -----
+
+		for (int j = 0; j < 5; j++){  
+			Serial.print(x);
+			Serial.print("\t");
+			Serial.print(sin(x) + random(-0.1, 0.1));
+			Serial.print("\r\n");
+		}
+		x += 3.14/12;
+		if (x > 100)[[unlikely]] { x = 0; }	
+		*/
 
 		private void DataUpdate(string data){
 
 			string d = "";
 			
-			// serial port output bit
-			if (RBHEX.Checked){ 
+			// serial text output bit
+			if (!RBHEX.Checked){ 
+				tbOutput.AppendText(data); 
+			}
+			else {
 				d = string.Join("", data.Select(c => String.Format("{0:X2}", Convert.ToInt32(c))));
 				tbOutput.AppendText(d);
 			}
-			else { tbOutput.AppendText(data); }
 			
 			if (IsEscaping.Checked) { tbOutput.AppendText("\n"); } // usually \n\r, but C# did me dirty
 
 			// serial plot output bit
-			// data == text
-			// BOLD ASSUMPTION - VALUES DON'T WRAP BACK, to infinity and beyond!
 			int index = data.IndexOf('\t');
 			int chartIndex = Chart.Series.IndexOf(GraphName.Text);
 
-			if (index >= 0){ 
+			if (index > 0){ 
 				string dataX = data.Substring(0,index);
 				string dataY = data.Substring(index + 1); // right after \t
+				doubleX = Convert.ToDouble(dataX, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+				doubleY = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+				//Chart.Series[chartIndex].Points.Remove(Chart.Series[chartIndex].Points[1]);
 
-				// Debug.WriteLine(dataX + "\t" + oldDataX);
-				// Debug.WriteLine(dataX == oldDataX);
+				#if !OLD_LOGIC // on using new logic
+
+				// add at least one point
+				if (first){ 
+					Chart.Series[chartIndex].Points.AddXY(doubleX, doubleY);
+					first = !first;
+				} 
+
+				// remember index of last point
+				lastIndex = Chart.Series[chartIndex].Points.IndexOf(Chart.Series[chartIndex].Points.Last());
+
+				// iterate trough all points
+				for (int i = 0; i < lastIndex; i++){ 
+					if (doubleX == Chart.Series[chartIndex].Points[i].XValue){	// if repeating value found
+						Chart.Series[chartIndex].Points[i].YValues[0] = doubleY;	// replace value
+						match = true;																							// we found a match
+						return;																										// exit early
+					} else{
+						match = false;																						// iterating trough collection yelded no match
+					}
+				}
 				
+				if (match != true){ Chart.Series[chartIndex].Points.AddXY(doubleX, doubleY); } // if no match found - add point
+				#else
+				if (first){
+					setPoints(doubleX, doubleY);
+					first = !first;
+				}
 
-				// Debug.WriteLine(dataX + ".." + dataY + " " + points[ArrayIndex, 0] + ".." + points[ArrayIndex, 1]);
+				// check if current point is the same as previous one, replace Y if yes
 				if (dataX == oldDataX){ 
-					points[ArrayIndex, 1] = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+					points[ArrayIndex, 1] = doubleY;
 				}
 				else{ 
-					if (ArrayIndex < pAmount - 1) { 
-						points[ArrayIndex, 0] = Convert.ToDouble(dataX, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-						points[ArrayIndex, 1] = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-
+					if (ArrayIndex < pAmount - 1) { // if we're not at the end of an array
+						// add a point
+						points[ArrayIndex, 0] = doubleX;
+						points[ArrayIndex, 1] = doubleY;
 						ArrayIndex++;
 					} 
 					else {
-						for (int x = 0; x < pAmount - 1; x++){ 
+						for (int x = 0; x < pAmount - 1; x++){ // shifting array by 1
 							points[x, 0] = points[x+1, 0];
 							points[x, 1] = points[x+1, 1];
 						}
 
-						points[pAmount-1, 0] = Convert.ToDouble(dataX, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-						points[pAmount-1, 1] = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+						// adding point in the end
+						points[pAmount-1, 0] = doubleX;
+						points[pAmount-1, 1] = doubleY;
 					} 
 				}
 
@@ -104,8 +160,8 @@ namespace SerialCommunication {
 				Chart.Series[chartIndex].Points.Clear();
 				for (int i = 0; i < pAmount; i++){ 
 					Chart.Series[chartIndex].Points.AddXY(points[i,0],points[i,1]);
-					// Debug.WriteLine(points[i, 0] + "\t" + points[i,1]);
 				}
+				#endif
 			}
 		}
 
@@ -131,10 +187,10 @@ namespace SerialCommunication {
 			_serialPort.Parity		= (Parity)Enum.Parse(typeof(Parity), Convert.ToString(CBParity.SelectedItem));
 			_serialPort.DataBits	= Convert.ToInt32(CBBits.Text);
 			_serialPort.StopBits	= (StopBits)Enum.Parse(typeof(StopBits), Convert.ToString(CBStopBit.SelectedItem));
-			_serialPort.Handshake	= Handshake.RequestToSend;
+			_serialPort.Handshake	= Handshake.XOnXOff;
 
-			_serialPort.ReadTimeout = 500;
-			_serialPort.WriteTimeout = 500;
+			_serialPort.ReadTimeout = -1;
+			_serialPort.WriteTimeout = -1;
 
 			try { 
 				if(! _serialPort.IsOpen) { 
@@ -177,6 +233,16 @@ namespace SerialCommunication {
 					_serialPort.DiscardInBuffer();
 					_serialPort.DiscardOutBuffer();
 					_serialPort.Close();
+
+					if (!first){ 
+						first = true;
+					}
+
+					for(int i = 0; i < pAmount; i++){ 
+						points[i, 0] = 0;
+						points[i, 1] = 0;
+					}
+
 
 					isEnabled = !isEnabled;
 					SwitchElements(isEnabled);
@@ -227,6 +293,7 @@ namespace SerialCommunication {
 			Chart.Series[0].Points.Clear();
 			ArrayIndex = 0;
 			Array.Clear(points, 0, points.Length);
+			first = !first;
 		}
 	}
 }
