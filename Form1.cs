@@ -1,7 +1,4 @@
-﻿// definitions are ALWAYS at a top
-// #define OLD_LOGIC
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.IO.Ports;
@@ -14,7 +11,15 @@ using System.Windows.Forms.DataVisualization.Charting;
 namespace SerialCommunication {
 	public partial class MainScreen : Form {
 		public MainScreen(){ InitializeComponent(); }
-			
+
+		private void MainScreen_Load(object sender, EventArgs e) {
+			CBPort.Items.Clear();
+			foreach (string s in SerialPort.GetPortNames()){
+				CBPort.Items.Add(s);
+			}
+			CBPort.Text = Convert.ToString(CBPort.Items[0]);
+		}
+
 		bool isEnabled = false;
 		SerialPort  _serialPort = new SerialPort(	"COM1",
 																							115200,
@@ -25,7 +30,7 @@ namespace SerialCommunication {
 		// deliage for inter-thread communication
 		private delegate void SetTextDeleg(string text);
 
-		// excecutes on data in
+		// executes on data in
 		void Received(object sender, SerialDataReceivedEventArgs e) {
 			Thread.Sleep(50);
 			try {
@@ -33,7 +38,6 @@ namespace SerialCommunication {
 
 				string data = "";
 				data = _serialPort.ReadLine();
-				Debug.Print(data);
 
 				this.BeginInvoke( new SetTextDeleg(DataUpdate),
 													new object[] { data } );
@@ -48,34 +52,12 @@ namespace SerialCommunication {
 		}
 		
 		public const int pAmount = 53;
-		public static double[,] points = new double[pAmount, 2];
-		public void setPoints(double x, double y){ 
-			for (int i = 0; i < pAmount; i++){ 
-					points[i, 0] = x;
-					points[i, 1] = y;
-			}
-		}
 		bool first = true;
 
-		string oldDataX = "";
-
-		static int ArrayIndex = 0;
 		double doubleX;
 		double doubleY;
 		int lastIndex;
 		bool match = true;
-
-		/* ----- code for testing (upload to arduino) -----
-
-		for (int j = 0; j < 5; j++){  
-			Serial.print(x);
-			Serial.print("\t");
-			Serial.print(sin(x) + random(-0.1, 0.1));
-			Serial.print("\r\n");
-		}
-		x += 3.14/12;
-		if (x > 100)[[unlikely]] { x = 0; }	
-		*/
 
 		private void DataUpdate(string data){
 
@@ -98,70 +80,27 @@ namespace SerialCommunication {
 
 			if (index > 0){ 
 				string dataX = data.Substring(0,index);
-				string dataY = data.Substring(index + 1); // right after \t
+				string dataY = data.Substring(index + 1);
 				doubleX = Convert.ToDouble(dataX, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
 				doubleY = Convert.ToDouble(dataY, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-				//Chart.Series[chartIndex].Points.Remove(Chart.Series[chartIndex].Points[1]);
 
-				#if !OLD_LOGIC // on using new logic
-
-				// add at least one point
 				if (first){ 
 					Chart.Series[chartIndex].Points.AddXY(doubleX, doubleY);
 					first = !first;
 				} 
 
-				// remember index of last point
-				lastIndex = Chart.Series[chartIndex].Points.IndexOf(Chart.Series[chartIndex].Points.Last());
-
-				// iterate trough all points
+				lastIndex = Chart.Series[chartIndex].Points.Count();
 				for (int i = 0; i < lastIndex; i++){ 
-					if (doubleX == Chart.Series[chartIndex].Points[i].XValue){	// if repeating value found
-						Chart.Series[chartIndex].Points[i].YValues[0] = doubleY;	// replace value
-						match = true;																							// we found a match
-						return;																										// exit early
+					if (doubleX == Chart.Series[chartIndex].Points[i].XValue){	
+						Chart.Series[chartIndex].Points[i].YValues[0] = doubleY;
+						match = true;																					
+						return;																							
 					} else{
-						match = false;																						// iterating trough collection yelded no match
+						match = false;																		
 					}
 				}
 				
-				if (match != true){ Chart.Series[chartIndex].Points.AddXY(doubleX, doubleY); } // if no match found - add point
-				#else
-				if (first){
-					setPoints(doubleX, doubleY);
-					first = !first;
-				}
-
-				// check if current point is the same as previous one, replace Y if yes
-				if (dataX == oldDataX){ 
-					points[ArrayIndex, 1] = doubleY;
-				}
-				else{ 
-					if (ArrayIndex < pAmount - 1) { // if we're not at the end of an array
-						// add a point
-						points[ArrayIndex, 0] = doubleX;
-						points[ArrayIndex, 1] = doubleY;
-						ArrayIndex++;
-					} 
-					else {
-						for (int x = 0; x < pAmount - 1; x++){ // shifting array by 1
-							points[x, 0] = points[x+1, 0];
-							points[x, 1] = points[x+1, 1];
-						}
-
-						// adding point in the end
-						points[pAmount-1, 0] = doubleX;
-						points[pAmount-1, 1] = doubleY;
-					} 
-				}
-
-				oldDataX = dataX;
-				// redraw chart
-				Chart.Series[chartIndex].Points.Clear();
-				for (int i = 0; i < pAmount; i++){ 
-					Chart.Series[chartIndex].Points.AddXY(points[i,0],points[i,1]);
-				}
-				#endif
+				if (match != true){ Chart.Series[chartIndex].Points.AddXY(doubleX, doubleY); } 
 			}
 		}
 
@@ -171,14 +110,7 @@ namespace SerialCommunication {
 			Close(); 
 		}
 
-	// checking available ports
-		private void btnCheck_Click(object sender, EventArgs e) {
-			CBPort.Items.Clear();
-			foreach (string s in SerialPort.GetPortNames()){
-				CBPort.Items.Add(s);
-			}
-			CBPort.Text = Convert.ToString(CBPort.Items[0]);
-		}
+		bool chartMatch = false;
 
 		// port opening and chart editing			
 		private void BtnOpen_Click(object sender, EventArgs e) {
@@ -196,27 +128,37 @@ namespace SerialCommunication {
 				if(! _serialPort.IsOpen) { 
 					_serialPort.Open(); 
 					_serialPort.DataReceived += new SerialDataReceivedEventHandler(Received);
+					Debug.Print("Opened port. Chart count:");
+					Debug.Write(Chart.Series.Count);
 
-					if(Chart.Series.Any() == false) { // if there aren't any graphs - create one
+					// adding charts
+					if(Chart.Series.Any() == false) { // if there aren't any - create one
 						Chart.Series.Add(GraphName.Text);
 						int i;
 						i = Chart.Series.IndexOf(GraphName.Text);
 						Chart.Series[i].ChartType = SeriesChartType.Spline;
+						Debug.Print("Added chart. Chart count:");
+						Debug.Write(Chart.Series.Count);
 					} 
-					else { // otherwise check if any existing ones overlap
+					else { // otherwise check if any existing ones overlap by name
 						for (int i = 0; i < Chart.Series.Count; i++) {
 							if (Chart.Series[i].Name == GraphName.Text) { 
-								MessageBox.Show("Нового графика не было построено.\n\rСвопадает имя с уже существующим", "Ошибка постройки графика");	
+								chartMatch = true;
+								MessageBox.Show("Имя нового графика совпадает с существующим.\nОн может быть перезаписан", "Повторение имён");
+								break;
 							}
-							else{ 
-								Chart.Series.Add(GraphName.Text);
-								int j;
-								j = Chart.Series.IndexOf(GraphName.Text);
-								Chart.Series[j].ChartType = SeriesChartType.Spline;
-							} 
+						}
+						// didn't find any
+						if (chartMatch == false){ 
+							Chart.Series.Add(GraphName.Text);
+							int j;
+							j = Chart.Series.IndexOf(GraphName.Text);
+							Chart.Series[j].ChartType = SeriesChartType.Spline;
 						}
 					}
 					
+					chartMatch = false; // resetting the state for another serial open attempt
+
 					isEnabled = !isEnabled;
 					SwitchElements(isEnabled);
 				}
@@ -238,16 +180,8 @@ namespace SerialCommunication {
 						first = true;
 					}
 
-					for(int i = 0; i < pAmount; i++){ 
-						points[i, 0] = 0;
-						points[i, 1] = 0;
-					}
-
-
 					isEnabled = !isEnabled;
 					SwitchElements(isEnabled);
-
-					ArrayIndex = 0;
 				}
 			}
 			catch (Exception err) { 
@@ -283,17 +217,22 @@ namespace SerialCommunication {
 			CBParity.Enabled = en;
 			CBStopBit.Enabled = en;
 			CBBits.Enabled = en;
-			btnCheck.Enabled = en;
 
-			BtnClearGraph.Enabled = !en;
+			//BtnClearGraph.Enabled = !en;
+			//BtnClearAll.Visible = !en;
 			GraphName.Visible = en;
 		}
 
 		private void BtnClearGraph_Click(object sender, EventArgs e) {
-			Chart.Series[0].Points.Clear();
-			ArrayIndex = 0;
-			Array.Clear(points, 0, points.Length);
+			int chartIndex = Chart.Series.IndexOf(GraphName.Text);
+			Chart.Series[chartIndex].Points.Clear();
 			first = !first;
+		}
+
+		private void btnClearAll_Click(object sender, EventArgs e) {
+			for (int i = 0; i < Chart.Series.Count; i++){ 
+				Chart.Series[i].Points.Clear();
+			}
 		}
 	}
 }
